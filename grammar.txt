@@ -20,6 +20,7 @@ S -> IMPORT;
 S -> FROM; 
 S -> COMMENT; 
 S -> ARRAY;
+S -> NONE;
 
 
 VAR -> variable;
@@ -72,7 +73,7 @@ RAISE -> raise INBRACKET;
 BREAK -> break;
 PASS -> pass;
 CONTINUE -> continue;
-NONE -> none
+NONE -> none = = [ ] |  
 
 IF -> if EXPRES; 
 IF -> IF ELIF; 

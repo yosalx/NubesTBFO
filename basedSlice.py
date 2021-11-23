@@ -12,7 +12,7 @@ def file_handler(filename):
     
     return file_n
 
-def basedSplice(filename):
+def basedSlice(filename):
     file = file_handler(filename)
     
     # base

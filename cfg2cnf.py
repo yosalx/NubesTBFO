@@ -18,10 +18,33 @@ def isSimple(rule):
 		return True
 	return False
 
-
 for nonTerminal in V:
 	if nonTerminal in variablesJar:
 		variablesJar.remove(nonTerminal)
+  
+def cleanProduction(expression):
+    result = []
+	#remove spaces and explode on ";"
+    rawRulse = expression.replace('\n','').split(';')
+	
+    for rule in rawRulse:
+		#Explode evry rule on "->" and make a couple
+        leftSide = rule.split(' -> ')[0].replace(' ','')
+        rightTerms = rule.split(' -> ')[1].split(' | ')
+        for term in rightTerms:
+	        result.append( (leftSide, term.split(' ')) )
+    return result
+
+def cleanAlphabet(expression):
+	return expression.replace('  ',' ').split(' ')
+
+def loadModel(modelPath):
+    file = open(modelPath).read()
+    K = (file.split("Variables:\n")[0].replace("Terminals:\n","").replace("\n",""))
+    V = (file.split("Variables:\n")[1].split("Productions:\n")[0].replace("Variables:\n","").replace("\n",""))
+    P = (file.split("Productions:\n")[1])
+
+    return cleanAlphabet(K), cleanAlphabet(V), cleanProduction(P)
 
 #Add S0->S rule––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––START
 def START(productions, variables):
@@ -78,25 +101,25 @@ def BIN(productions, variables):
 	
 
 #Delete non terminal rules–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––DEL
-def DEL(productions):
-	newSet = []
-	#seekAndDestroy throw back in:
-	#        – outlaws all left side of productions such that right side is equal to the outlaw
-	#        – productions the productions without outlaws 
-	outlaws, productions = helper.seekAndDestroy(target='e', productions=productions)
-	#add new reformulation of old rules
-	for outlaw in outlaws:
-		#consider every production: old + new resulting important when more than one outlaws are in the same prod.
-		for production in productions + [e for e in newSet if e not in productions]:
-			#if outlaw is present in the right side of a rule
-			if outlaw in production[right]:
-				#the rule is rewrited in all combination of it, rewriting "e" rather than outlaw
-				#this cycle prevent to insert duplicate rules
-				newSet = newSet + [e for e in  helper.rewrite(outlaw, production) if e not in newSet]
+# def DEL(productions):
+# 	newSet = []
+# 	#seekAndDestroy throw back in:
+# 	#        – outlaws all left side of productions such that right side is equal to the outlaw
+# 	#        – productions the productions without outlaws 
+# 	outlaws, productions = helper.seekAndDestroy(target='e', productions=productions)
+# 	#add new reformulation of old rules
+# 	for outlaw in outlaws:
+# 		#consider every production: old + new resulting important when more than one outlaws are in the same prod.
+# 		for production in productions + [e for e in newSet if e not in productions]:
+# 			#if outlaw is present in the right side of a rule
+# 			if outlaw in production[right]:
+# 				#the rule is rewrited in all combination of it, rewriting "e" rather than outlaw
+# 				#this cycle prevent to insert duplicate rules
+# 				newSet = newSet + [e for e in  helper.rewrite(outlaw, production) if e not in newSet]
 
-	#add unchanged rules and return
-	return newSet + ([productions[i] for i in range(len(productions)) 
-							if productions[i] not in newSet])
+# 	#add unchanged rules and return
+# 	return newSet + ([productions[i] for i in range(len(productions)) 
+# 							if productions[i] not in newSet])
 
 def unit_routine(rules, variables):
 	unitaries, result = [], []
@@ -124,21 +147,67 @@ def UNIT(productions, variables):
 		i+=1
 	return result
 
-
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		modelPath = str(sys.argv[1])
 	else:
 		modelPath = 'grammar.txt'
 	
-	K, V, Productions = helper.loadModel( modelPath )
+	K, V, Productions = loadModel( modelPath )
 
 	Productions = START(Productions, variables=V)
 	Productions = TERM(Productions, variables=V)
 	Productions = BIN(Productions, variables=V)
-	Productions = DEL(Productions)
+	# Productions = DEL(Productions)
 	Productions = UNIT(Productions, variables=V)
 	
-	print( helper.prettyForm(Productions) )
-	print( len(Productions) )
-	open('out.txt', 'w').write(	helper.prettyForm(Productions) )
+def prodToDict(productions):
+    dictionary = {}
+    for production in productions :
+	    if(production[left] in dictionary.keys()):
+		    dictionary[production[left]].append(production[right])
+	    else :
+		    dictionary[production[left]] = []
+		    dictionary[production[left]].append(production[right])
+    return dictionary
+
+#print(prodToDict(Productions))
+	# print( helper.prettyForm(Productions) )
+	# print( len(Productions) )
+	# open('out.txt', 'w').write(	helper.prettyForm(Productions))
+ 
+x = prodToDict(Productions)
+
+def cyk(w,cnfGram):
+    n = len(w)
+    dp = [[set([]) for i in range(n)] for j in range(n)]
+
+    for i in range(n):
+        for var in cnfGram.items():
+                for termin in var[1]:
+                    if len(termin) == 1 and termin[0] == w[i]:
+                        dp[i][i].add(var[0])
+
+    for l in range(2,n+1):
+        for i in range (0,n-l+1):
+            j = i+l-1
+            for k in range (i,j):
+                for var in cnfGram.items():
+                    for prod in var[1] :
+                        if len(prod) == 2 :
+                            if(prod[0] in dp[i][k]) and (prod[1] in dp[k+1][j]):
+                                dp[i][j].add(var[0])
+    # print(dp)
+    # print(dp[0][n-1])
+    if "S0" in dp[0][n-1] :
+        print("Accepted Answer! :D")
+        #return True
+    else :
+        print("Syntax Error :(")
+        #return False
+        
+import basedSlice
+
+temp = basedSlice.basedSlice('input.txt')
+cyk(temp,x)
+

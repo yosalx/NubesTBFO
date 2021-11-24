@@ -1,4 +1,5 @@
 import re
+from fa import isInteger, isVariable as isVar
 
 def file_handler(filename):
     
@@ -17,6 +18,7 @@ def basedSlice(filename):
     
     # base
     operans = ['def', 'return', 'for', 'import', 'from', 'with', 'true', 'false', 'none', 'not', '#', 'elif', 'else', 'while', 'break', 'continue', 'pass', 'range', 'raise', 'class', 'open', 'print', '>', '<', '>=', '<=', '=', '==', '!=', ':', ',', '/', '-', r'\+', r'\*', r'\*\*', r'\'', r'\"', r'\'\'\'', r'\(', r'\)', r'\{', r'\}', r'\[', r'\]' ]
+    var_operans = ['def', 'return', 'for', 'import', 'from', 'with', 'true', 'false', 'none', 'not', '#', 'elif', 'else', 'while', 'break', 'continue', 'pass', 'range', 'raise', 'class', 'open', 'print', '>', '<', '>=', '<=', '=', '==', '!=', ':', ',', '/', '-', '+', '*', '**', " , ", '"', '(', ')', '{', '}', '[', ']' ]
     
     # slice on each line based on operans
     for each in operans:
@@ -33,17 +35,25 @@ def basedSlice(filename):
         
     sliced_base = []
     
+    var_inspect = True
     for each in file:
-        if each in operans:
+        if each in var_operans:
             sliced_base.append(each)
         else:
             if (each == 'as' or each == 'is' or each == 'or' or each == 'in' or each == 'if' or each == 'and'): # avoid redundant
                 sliced_base.append(each)
             else:
-                split = list(each) # assumed variable
-                sliced_base.extend(split)
-            
-    return sliced_base  
+                if(isVar(each)):
+                    split = list(each) # assumed variable
+                    sliced_base.extend(split)
+                elif (isInteger(each)):
+                    split = list(each)
+                    sliced_base.extend(each)
+                else:
+                    print("Error... terdapat kesalahan variabel pada: "+each)
+                    var_inspect = False
+                    break
+    return sliced_base, var_inspect
     
     
         

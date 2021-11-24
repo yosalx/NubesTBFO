@@ -18,7 +18,28 @@ def isVariable(s):
         if (state == 1):
             state = state1(s[i])
         if (state == 2):
-            print("Variable invalid")
             return False
-    print("Variable valid")
+    return True
+
+def intStartState(s):
+    if (ord(s) >= 48 and ord(s) <= 57):
+        return 1
+    else:
+        return 2
+
+def intState1(s):
+    if (ord(s) >= 48 and ord(s) <= 57):
+        return 1
+    else:
+        return 2
+
+def isInteger(s):
+    state = 0
+    for i in range (len(s)):
+        if state == 0:
+            state = intStartState(s[i])
+        elif state == 1:
+            state = intState1(s[i])
+        elif state == 2:
+            return False
     return True

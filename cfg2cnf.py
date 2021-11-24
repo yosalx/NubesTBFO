@@ -1,4 +1,4 @@
-import sys, helper
+import sys
 
 left, right = 0, 1
 
@@ -22,7 +22,15 @@ def isSimple(K,V,rule):
 for nonTerminal in V:
 	if nonTerminal in variablesJar:
 		variablesJar.remove(nonTerminal)
-  
+
+def setupDict(productions, variables, terms):
+	result = {}
+	for production in productions:
+		#
+		if production[left] in variables and production[right][0] in terms and len(production[right]) == 1:
+			result[production[right][0]] = production[left]
+	return result
+
 def cleanProduction(expression):
     result = []
 	#remove spaces and explode on ";"
@@ -65,7 +73,7 @@ def START(productions, variables):
 def TERM(productions, variables,terminals):
 	newProductions = []
 	#create a dictionari for all base production, like A->a, in the form dic['a'] = 'A'
-	dictionary = helper.setupDict(productions, variables, terms=K)
+	dictionary = setupDict(productions, variables, terms=K)
 	for production in productions:
 		#check if the production is simple
 		if isSimple(terminals,variables,production):
@@ -222,8 +230,11 @@ def cyk(w,grammar):
         
 import basedSlice
 
-temp = basedSlice.basedSlice('input.txt')
-cyk(temp,x)
+print("start compile....")
+temp,var_inspect = basedSlice.basedSlice('input.txt')
+
+if var_inspect == True :
+	cyk(temp,x)
 #print(temp)
 #print("******************************************")
 #print(x)

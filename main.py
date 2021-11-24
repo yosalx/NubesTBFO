@@ -38,7 +38,8 @@ if len(sys.argv) > 1:
 else:
 	modelPath = 'grammar.txt'
         
-print("start compile....")
+print("start compile...")
+print("\n")
 
 cnf = cfg2cnf.prodToDict(modelPath)
 

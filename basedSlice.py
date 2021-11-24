@@ -35,7 +35,7 @@ def basedSlice(filename):
         
     sliced_base = []
     
-    var_inspect = True
+    var_inspect = True # bool for variable inspection
     for each in file:
         if each in var_operans:
             sliced_base.append(each)
@@ -47,10 +47,10 @@ def basedSlice(filename):
                     split = list(each) # assumed variable
                     sliced_base.extend(split)
                 elif (isInt(each)):
-                    split = list(each)
+                    split = list(each) # assumed int
                     sliced_base.extend(each)
                 else:
-                    print("Error... terdapat kesalahan variabel pada: "+each)
+                    print("Error... terdapat kesalahan variabel pada: "+each) # else than var, int and operans
                     var_inspect = False
                     break
     return sliced_base, var_inspect

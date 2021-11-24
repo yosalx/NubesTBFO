@@ -197,12 +197,7 @@ def prodToDict(modelPath):
 		    dictionary[production[left]].append(production[right])
 	return dictionary
 
-#print(prodToDict(Productions))
-	# print( helper.prettyForm(Productions) )
-	# print( len(Productions) )
-	# open('out.txt', 'w').write(	helper.prettyForm(Productions))
+#print(prodToDict(modelPath))
 
-#print(temp)
+#print(START(productions. variables))
 #print("******************************************")
-#print(x)
-

@@ -41,7 +41,7 @@ else:
 print("start compile...")
 print("\n")
 
-cnf = cfg2cnf.prodToDict(modelPath)
+cnf = cfg2cnf.initDictionary(modelPath)
 
 sliced,var_inspect = basedSlice('input.txt')
 

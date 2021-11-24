@@ -174,7 +174,7 @@ def convert(modelPath):
 	# Productions = DEL(Productions)
 	Productions = UNIT(Productions, variables=V)
 	
-def prodToDict(modelPath):
+def initDictionary(modelPath):
     
 	def convert(modelPath):
 		K, V, Productions = loadModel( modelPath )
@@ -197,7 +197,7 @@ def prodToDict(modelPath):
 		    dictionary[production[left]].append(production[right])
 	return dictionary
 
-#print(prodToDict(modelPath))
+#print(initDictionary(modelPath))
 
 #print(START(productions. variables))
 #print("******************************************")

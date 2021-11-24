@@ -1,5 +1,5 @@
 import re
-from fa import isInteger, isVariable as isVar
+from fa import isInteger as isInt, isVariable as isVar
 
 def file_handler(filename):
     
@@ -46,7 +46,7 @@ def basedSlice(filename):
                 if(isVar(each)):
                     split = list(each) # assumed variable
                     sliced_base.extend(split)
-                elif (isInteger(each)):
+                elif (isInt(each)):
                     split = list(each)
                     sliced_base.extend(each)
                 else:

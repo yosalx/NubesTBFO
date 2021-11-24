@@ -1,5 +1,3 @@
-import sys
-
 left, right = 0, 1
 
 K, V, Productions = [],[],[]
@@ -8,6 +6,10 @@ variablesJar = ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1", "I1", "J1", "K1"
 "A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3", "I3", "J3", "K3", "L3", "M3", "N3", "O3", "P3", "Q3", "R3", "S3", "T3", "U3", "V3", "W3", "X3", "Y3", "Z3",
 "A4", "B4", "C4", "D4", "E4", "F4", "G4", "H4", "I4", "J4", "K4", "L4", "M4", "N4", "O4", "P4", "Q4", "R4", "S4", "T4", "U4", "V4", "W4", "X4", "Y4", "Z4",
 "A5", "B5", "C5", "D5", "E5", "F5", "G5", "H5", "I5", "J5", "K5", "L5", "M5", "N5", "O5", "P5", "Q5", "R5", "S5", "T5", "U5", "V5", "W5", "X5", "Y5", "Z5"]
+
+for nonTerminal in V:
+	if nonTerminal in variablesJar:
+		variablesJar.remove(nonTerminal)
 
 def isUnitary(rule, variables):
 	if rule[left] in variables and rule[right][0] in variables and len(rule[right]) == 1:
@@ -18,10 +20,6 @@ def isSimple(K,V,rule):
     if rule[left] in V and rule[right][0] in K and len(rule[right]) == 1:
 	    return True
     return False
-
-for nonTerminal in V:
-	if nonTerminal in variablesJar:
-		variablesJar.remove(nonTerminal)
 
 def setupDict(productions, variables, terms):
 	result = {}
@@ -166,12 +164,8 @@ def UNIT(productions, variables):
 		i+=1
 	return result
 
-if __name__ == '__main__':
-	if len(sys.argv) > 1:
-		modelPath = str(sys.argv[1])
-	else:
-		modelPath = 'grammar.txt'
-	
+
+def convert(modelPath):
 	K, V, Productions = loadModel( modelPath )
 
 	Productions = START(Productions, variables=V)
@@ -180,61 +174,34 @@ if __name__ == '__main__':
 	# Productions = DEL(Productions)
 	Productions = UNIT(Productions, variables=V)
 	
-def prodToDict(productions):
-    dictionary = {}
-    for production in productions :
+def prodToDict(modelPath):
+    
+	def convert(modelPath):
+		K, V, Productions = loadModel( modelPath )
+
+		Productions = START(Productions, variables=V)
+		Productions = TERM(Productions, variables=V, terminals=K)
+		Productions = BIN(Productions, variables=V)
+		# Productions = DEL(Productions)
+		Productions = UNIT(Productions, variables=V)
+		return Productions
+
+	productions = convert(modelPath)
+
+	dictionary = {}
+	for production in productions :
 	    if(production[left] in dictionary.keys()):
 		    dictionary[production[left]].append(production[right])
 	    else :
 		    dictionary[production[left]] = []
 		    dictionary[production[left]].append(production[right])
-    return dictionary
+	return dictionary
 
 #print(prodToDict(Productions))
 	# print( helper.prettyForm(Productions) )
 	# print( len(Productions) )
 	# open('out.txt', 'w').write(	helper.prettyForm(Productions))
- 
-x = prodToDict(Productions)
 
-def cyk(w,grammar):
-    n = len(w)
-
-	#init table
-    tab = [[set([]) for j in range(n)] for i in range(n)]
-
-	#isi table
-    for j in range(0, n):
-        for rule in grammar.items():
-                for terminal in rule[1]:
-                    if len(terminal) == 1 and terminal[0] == w[j]: #ketemu terminal
-                        tab[j][j].add(rule[0])
-
-    for k in range(2, n+1):
-        for j in range (0, n-k+1):
-            i = j+k-1
-            for l in range (j,i):
-                for rule in grammar.items():
-                    for terminal in rule[1] :
-                        if len(terminal) == 2 :
-                            if(terminal[0] in tab[j][l]) and (terminal[1] in tab[l+1][i]): #ketemu terminal
-                                tab[j][i].add(rule[0])
-    # print(tab)
-    # print(tab[0][n-1])
-    if "S0" in tab[0][n-1] :
-        print("Accepted")
-        #return True
-    else :
-        print("Syntax Error")
-        #return False
-        
-import basedSlice
-
-print("start compile....")
-temp,var_inspect = basedSlice.basedSlice('input.txt')
-
-if var_inspect == True :
-	cyk(temp,x)
 #print(temp)
 #print("******************************************")
 #print(x)

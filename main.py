@@ -28,7 +28,8 @@ def cyk(w,grammar):
         print("Accepted")
     else :
         print("Syntax Error")
-        
+    
+file = input("File manakah yang ingin di compile : ")
 if len(sys.argv) > 1:
     	modelPath = str(sys.argv[1])
 else:
@@ -39,7 +40,7 @@ print("\n")
 
 cnf = cfg2cnf.initDictionary(modelPath)
 
-sliced,var_inspect = basedSlice('input.txt')
+sliced,var_inspect = basedSlice(file)
 
 if var_inspect == True :
 	cyk(sliced,cnf)

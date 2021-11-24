@@ -29,21 +29,21 @@ def basedSlice(filename):
                     continue # skip blank
                 else :
                     Sliced.append(sliced) 
-        temp = Sliced
+        file = Sliced
         
     sliced_base = []
     
-    for each in temp:
+    for each in file:
         if each in operans:
             sliced_base.append(each)
         else:
-            if (each == 'as' or 'is' or 'or' or  'in' or  'if' or 'and'): # avoid redundant
+            if (each == 'as' or each == 'is' or each == 'or' or each == 'in' or each == 'if' or each == 'and'): # avoid redundant
                 sliced_base.append(each)
             else:
                 split = list(each) # assumed variable
                 sliced_base.extend(split)
             
-    return sliced_base
+    return sliced_base  
     
     
         
